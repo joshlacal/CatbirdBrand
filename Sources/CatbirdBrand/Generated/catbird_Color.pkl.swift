@@ -18,10 +18,12 @@ extension catbird_Color {
         /// as the brand gradient across all platforms.
         public var catbird: Palette
 
-        /// Six user-selectable alternates. The `accentLight` values match the
-        /// current iOS ThemeManager sRGB conversions; `accentDark` lifts luminance
-        /// by roughly 20% for dark-mode contrast; `gradientPartner` is identical
-        /// to `accentDark` by convention.
+        /// Six user-selectable alternates. Text-tier fields default to the
+        /// chrome values in the current set — picking a non-Catbird palette is
+        /// an aesthetic choice that accepts sub-AA-normal contrast for inline
+        /// accent text. If we ever ship an "accessible palettes" mode, this is
+        /// where per-palette accentText/accentTextDark values would be filled
+        /// in with AA-normal-compliant derivations.
         public var twilight: Palette
 
         public var lavender: Palette
@@ -73,15 +75,41 @@ extension catbird_Color {
     public struct Palette: PklRegisteredType, Decodable, Hashable, Sendable {
         public static let registeredIdentifier: String = "catbird.Color#Palette"
 
+        /// Chrome / fill accent for light mode. Selected tab bg, FAB,
+        /// button fills, icons. May sit at AA-large only on white; text
+        /// rendered on top of this color is typically ≥18pt or ≥14pt bold,
+        /// which is the AA-large threshold.
         public var accentLight: String
 
+        /// Chrome / fill accent for dark mode. Same role as accentLight,
+        /// lifted for contrast against dark surfaces.
         public var accentDark: String
 
+        /// Text-safe accent for light mode. Inline links, @mentions,
+        /// hashtags, accent-colored text at body size and regular weight.
+        /// Must clear WCAG AA-normal (≥4.5:1) on white and the common
+        /// light-surface background.
+        public var accentText: String
+
+        /// Text-safe accent for dark mode. Same role as accentText on the
+        /// dim / true-black dark surfaces.
+        public var accentTextDark: String
+
+        /// Lighter stop of the brand gradient (accentLight → gradientPartner
+        /// at 135°). Stays constant across light and dark modes.
         public var gradientPartner: String
 
-        public init(accentLight: String, accentDark: String, gradientPartner: String) {
+        public init(
+            accentLight: String,
+            accentDark: String,
+            accentText: String,
+            accentTextDark: String,
+            gradientPartner: String
+        ) {
             self.accentLight = accentLight
             self.accentDark = accentDark
+            self.accentText = accentText
+            self.accentTextDark = accentTextDark
             self.gradientPartner = gradientPartner
         }
     }

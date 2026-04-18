@@ -1,10 +1,16 @@
 import Testing
 @testable import CatbirdBrand
 
-@Test func catbirdAccentLightMatchesSpec() {
-    #expect(Brand.color.catbird.accentLight == "#143F9C")
-    #expect(Brand.color.catbird.accentDark == "#5C8AE8")
-    #expect(Brand.color.catbird.gradientPartner == "#5C8AE8")
+@Test func catbirdAccentMatchesSpec() {
+    #expect(Brand.color.catbird.accentLight == "#5192FF")
+    #expect(Brand.color.catbird.accentDark == "#5192FF")
+    #expect(Brand.color.catbird.gradientPartner == "#7FAEFF")
+}
+
+@Test func catbirdTextAccentIsAANormalSafe() {
+    // #005EFF clears WCAG AA-normal (≥4.5:1) on white at 5.19:1.
+    #expect(Brand.color.catbird.accentText == "#005EFF")
+    #expect(Brand.color.catbird.accentTextDark == "#5192FF")
 }
 
 @Test func displayRoleIsExtendedWidth() {
@@ -51,7 +57,7 @@ import Testing
 
 @Test func sevenPalettesExist() {
     #expect(Brand.color.all.count == 7)
-    #expect(Brand.color.all["catbird"]?.accentLight == "#143F9C")
+    #expect(Brand.color.all["catbird"]?.accentLight == "#5192FF")
 }
 
 @Test func motionBindingsPresent() {
