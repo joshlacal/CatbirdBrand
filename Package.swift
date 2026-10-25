@@ -14,7 +14,7 @@ let package = Package(
         .library(name: "CatbirdBrand", targets: ["CatbirdBrand"]),
     ],
     dependencies: [
-        .package(url: "https://github.com/apple/pkl-swift", from: "0.8.2"),
+        .package(url: "https://github.com/apple/pkl-swift", .upToNextMinor(from: "0.10.0")),
     ],
     targets: [
         .target(
