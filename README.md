@@ -2,6 +2,10 @@
 
 Swift package exposing generated Catbird design-system tokens to iOS, iPadOS, watchOS, macOS, tvOS, and visionOS apps.
 
+## Documentation
+
+API reference (DocC): <https://joshlacal.github.io/CatbirdBrand/>. Build it locally with `Scripts/build-docs-site.sh`.
+
 ## What's inside
 
 - `Sources/CatbirdBrand/Generated/` — Swift types emitted by `pkl run @pkl.swift/gen.pkl` against the Pkl modules at `../docs/brand/tokens/`. Do not hand-edit.
