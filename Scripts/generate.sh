@@ -2,6 +2,10 @@
 # Regenerates Swift token types AND the bundled tokens.json resource
 # from docs/brand/tokens/*.pkl.
 #
+# Environment overrides:
+#   CATBIRD_BRAND_TOKENS_DIR — directory containing Catbird.pkl and submodules
+#                              (default: ../docs/brand/tokens relative to package root)
+#
 # - Swift types: emitted by `pkl run @pkl.swift/gen.pkl` into
 #   Sources/CatbirdBrand/Generated/. One catbird_<Submodule>.pkl.swift
 #   per Pkl submodule. Generator is Apple's pkl-swift v0.8.2+.
@@ -11,7 +15,7 @@ set -euo pipefail
 
 PACKAGE_ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 WORKSPACE_ROOT="$(cd "$PACKAGE_ROOT/.." && pwd)"
-TOKENS_DIR="$WORKSPACE_ROOT/docs/brand/tokens"
+TOKENS_DIR="${CATBIRD_BRAND_TOKENS_DIR:-$WORKSPACE_ROOT/docs/brand/tokens}"
 
 GEN_OUT="$PACKAGE_ROOT/Sources/CatbirdBrand/Generated"
 RES_OUT="$PACKAGE_ROOT/Sources/CatbirdBrand/Resources/tokens.json"
@@ -30,6 +34,7 @@ pkl run package://pkg.pkl-lang.org/pkl-swift/pkl.swift@0.8.2#/gen.pkl \
   "$TOKENS_DIR/Color.pkl" \
   "$TOKENS_DIR/Space.pkl" \
   "$TOKENS_DIR/Radius.pkl" \
+  "$TOKENS_DIR/Control.pkl" \
   "$TOKENS_DIR/Type.pkl" \
   "$TOKENS_DIR/Motion.pkl" \
   "$TOKENS_DIR/Material.pkl" \

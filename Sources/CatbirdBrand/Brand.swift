@@ -23,6 +23,7 @@ public enum Brand {
     public static let color:    catbird_Color.Module    = decodeSlice(key: "color")
     public static let space:    catbird_Space.Module    = decodeSlice(key: "space")
     public static let radius:   catbird_Radius.Module   = decodeSlice(key: "radius")
+    public static let control:  catbird_Control.Module  = decodeSlice(key: "control")
     public static let type:     catbird_Type.Module     = decodeSlice(key: "type")
     public static let motion:   catbird_Motion.Module   = decodeSlice(key: "motion")
     public static let material: catbird_Material.Module = decodeSlice(key: "material")
