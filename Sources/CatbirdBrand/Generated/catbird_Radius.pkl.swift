@@ -4,8 +4,9 @@ import PklSwift
 public enum catbird_Radius {}
 
 extension catbird_Radius {
-    /// Corner radius scale. All rounded corners render as continuous
-    /// (squircle) curves where the platform supports it.
+    /// Corner radius scale, aligned with the adopted Catbird iOS scale (Nov 2026).
+    /// All rounded corners render as continuous (squircle) curves where the
+    /// platform supports it.
     public struct Module: PklRegisteredType, Decodable, Hashable, Sendable {
         public static let registeredIdentifier: String = "catbird.Radius"
 
@@ -19,15 +20,19 @@ extension catbird_Radius {
 
         public var xl: Int
 
-        /// Render as `9999` in layout code; consumers treat as "50% for circles".
+        /// Pill / capsule / circular corner radius (consumers treat as 50% or Capsule).
+        public var pill: Int
+
+        /// Backwards-compatible alias for `pill`.
         public var full: Int
 
-        public init(xs: Int, sm: Int, md: Int, lg: Int, xl: Int, full: Int) {
+        public init(xs: Int, sm: Int, md: Int, lg: Int, xl: Int, pill: Int, full: Int) {
             self.xs = xs
             self.sm = sm
             self.md = md
             self.lg = lg
             self.xl = xl
+            self.pill = pill
             self.full = full
         }
     }

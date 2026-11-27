@@ -4,8 +4,9 @@ import PklSwift
 public enum catbird_Motion {}
 
 extension catbird_Motion {
-    /// Motion intent tokens. Each intent carries per-platform binding values
-    /// that consumers expand into native curves at codegen time.
+    /// Motion intent tokens. Each intent carries structured numeric curve
+    /// parameters (so Swift and other consumers never hand-copy constants)
+    /// alongside per-platform binding snippets.
     public struct Module: PklRegisteredType, Decodable, Hashable, Sendable {
         public static let registeredIdentifier: String = "catbird.Motion"
 
@@ -37,6 +38,25 @@ extension catbird_Motion {
     public struct Binding: PklRegisteredType, Decodable, Hashable, Sendable {
         public static let registeredIdentifier: String = "catbird.Motion#Binding"
 
+        /// Curve kind: "smooth" | "spring" | "easeOut" | "interactiveSpring"
+        public var kind: String
+
+        /// Timed animation duration in seconds; null for spring curves.
+        public var duration: Float64?
+
+        /// Spring response in seconds; null for timed curves.
+        public var response: Float64?
+
+        /// Spring damping fraction (0..1+); null for timed curves.
+        public var dampingFraction: Float64?
+
+        /// Reduce Motion behavior per 05-motion.md: "crossfade" | "linear" | "none"
+        public var reduceMotionFallback: String
+
+        /// Duration in seconds when Reduce Motion is active (0.0 for "none").
+        public var reduceMotionDuration: Float64
+
+        /// Platform reference expressions (retained for compatibility & docs).
         public var iosSwiftUI: String
 
         public var androidCompose: String
@@ -46,11 +66,23 @@ extension catbird_Motion {
         public var cssDurationMs: Int
 
         public init(
+            kind: String,
+            duration: Float64?,
+            response: Float64?,
+            dampingFraction: Float64?,
+            reduceMotionFallback: String,
+            reduceMotionDuration: Float64,
             iosSwiftUI: String,
             androidCompose: String,
             cssTiming: String,
             cssDurationMs: Int
         ) {
+            self.kind = kind
+            self.duration = duration
+            self.response = response
+            self.dampingFraction = dampingFraction
+            self.reduceMotionFallback = reduceMotionFallback
+            self.reduceMotionDuration = reduceMotionDuration
             self.iosSwiftUI = iosSwiftUI
             self.androidCompose = androidCompose
             self.cssTiming = cssTiming

@@ -6,11 +6,10 @@ public enum catbird_Color {}
 extension catbird_Color {
     /// Color tokens for the Catbird design system.
     ///
-    /// Palette values for the six non-Catbird palettes were translated from the
-    /// current iOS `ThemeManager.swift` sRGB values. Each palette carries a
-    /// light-mode accent, a dark-mode accent, and a gradient partner. The
-    /// gradient partner is the lighter stop of the palette's 135° linear
-    /// gradient; the light-mode accent is the darker stop.
+    /// Palette values for the six non-Catbird palettes were translated from iOS
+    /// `ThemeManager.swift` sRGB values. Each palette carries light/dark chrome
+    /// accents, WCAG AA-normal light/dark text accents, WCAG AA-normal foreground
+    /// inks (`onAccent`), and a 135° gradient partner.
     public struct Module: PklRegisteredType, Decodable, Hashable, Sendable {
         public static let registeredIdentifier: String = "catbird.Color"
 
@@ -18,12 +17,9 @@ extension catbird_Color {
         /// as the brand gradient across all platforms.
         public var catbird: Palette
 
-        /// Six user-selectable alternates. Text-tier fields default to the
-        /// chrome values in the current set — picking a non-Catbird palette is
-        /// an aesthetic choice that accepts sub-AA-normal contrast for inline
-        /// accent text. If we ever ship an "accessible palettes" mode, this is
-        /// where per-palette accentText/accentTextDark values would be filled
-        /// in with AA-normal-compliant derivations.
+        /// Six user-selectable alternates. Every palette provides same-hue
+        /// WCAG AA-normal (≥4.5:1) `accentText` / `accentTextDark` derivations
+        /// and contrast-verified `onAccent` inks across Light, Dim, and True Black.
         public var twilight: Palette
 
         public var lavender: Palette
@@ -41,6 +37,10 @@ extension catbird_Color {
         /// Semantic colors — unchanged across palettes.
         public var semantic: Semantic
 
+        public var border: BorderSchemes
+
+        public var light: LightScheme
+
         public var dim: DarkScheme
 
         public var trueBlack: DarkScheme
@@ -55,6 +55,8 @@ extension catbird_Color {
             midnight: Palette,
             all: [String: Palette],
             semantic: Semantic,
+            border: BorderSchemes,
+            light: LightScheme,
             dim: DarkScheme,
             trueBlack: DarkScheme
         ) {
@@ -67,6 +69,8 @@ extension catbird_Color {
             self.midnight = midnight
             self.all = all
             self.semantic = semantic
+            self.border = border
+            self.light = light
             self.dim = dim
             self.trueBlack = trueBlack
         }
@@ -76,9 +80,7 @@ extension catbird_Color {
         public static let registeredIdentifier: String = "catbird.Color#Palette"
 
         /// Chrome / fill accent for light mode. Selected tab bg, FAB,
-        /// button fills, icons. May sit at AA-large only on white; text
-        /// rendered on top of this color is typically ≥18pt or ≥14pt bold,
-        /// which is the AA-large threshold.
+        /// button fills, icons.
         public var accentLight: String
 
         /// Chrome / fill accent for dark mode. Same role as accentLight,
@@ -87,30 +89,53 @@ extension catbird_Color {
 
         /// Text-safe accent for light mode. Inline links, @mentions,
         /// hashtags, accent-colored text at body size and regular weight.
-        /// Must clear WCAG AA-normal (≥4.5:1) on white and the common
-        /// light-surface background.
+        /// Clears WCAG AA-normal (≥4.5:1) on both light canvas (`#FFFFFF`)
+        /// and light card (`#F2F2F7`) surfaces.
         public var accentText: String
 
         /// Text-safe accent for dark mode. Same role as accentText on the
-        /// dim / true-black dark surfaces.
+        /// dim and true-black dark surfaces (≥4.5:1 on background, surface,
+        /// and surfaceContainer).
         public var accentTextDark: String
 
         /// Lighter stop of the brand gradient (accentLight → gradientPartner
         /// at 135°). Stays constant across light and dark modes.
         public var gradientPartner: String
 
+        /// WCAG AA-normal (≥4.5:1) foreground ink on chrome accent fills.
+        public var onAccent: OnAccent
+
         public init(
             accentLight: String,
             accentDark: String,
             accentText: String,
             accentTextDark: String,
-            gradientPartner: String
+            gradientPartner: String,
+            onAccent: OnAccent
         ) {
             self.accentLight = accentLight
             self.accentDark = accentDark
             self.accentText = accentText
             self.accentTextDark = accentTextDark
             self.gradientPartner = gradientPartner
+            self.onAccent = onAccent
+        }
+    }
+
+    /// WCAG AA-normal (≥4.5:1) foreground ink drawn on top of a palette's chrome
+    /// accent fill in light and dark modes (`#FFFFFF` or `#0B0D12`).
+    public struct OnAccent: PklRegisteredType, Decodable, Hashable, Sendable {
+        public static let registeredIdentifier: String = "catbird.Color#OnAccent"
+
+        /// Foreground ink on `accentLight`.
+        public var light: String
+
+        /// Foreground ink on `accentDark`.
+        public var dark: String
+
+        public init(light: String, dark: String) {
+            self.light = light
+            self.dark = dark
         }
     }
 
@@ -133,6 +158,76 @@ extension catbird_Color {
         }
     }
 
+    /// Mode-indexed border tokens across Light, Dim, and True Black.
+    public struct BorderSchemes: PklRegisteredType, Decodable, Hashable, Sendable {
+        public static let registeredIdentifier: String = "catbird.Color#BorderSchemes"
+
+        public var light: Border
+
+        public var dim: Border
+
+        public var trueBlack: Border
+
+        public init(light: Border, dim: Border, trueBlack: Border) {
+            self.light = light
+            self.dim = dim
+            self.trueBlack = trueBlack
+        }
+    }
+
+    /// Hairline and prominent border tokens for one theme mode.
+    public struct Border: PklRegisteredType, Decodable, Hashable, Sendable {
+        public static let registeredIdentifier: String = "catbird.Color#Border"
+
+        /// Decorative hairline / subtle card boundary.
+        public var subtle: String
+
+        /// High-contrast / interactive control boundary (≥3.0:1 against surface).
+        public var prominent: String
+
+        public init(subtle: String, prominent: String) {
+            self.subtle = subtle
+            self.prominent = prominent
+        }
+    }
+
+    /// Light-mode surface and foreground tokens.
+    public struct LightScheme: PklRegisteredType, Decodable, Hashable, Sendable {
+        public static let registeredIdentifier: String = "catbird.Color#LightScheme"
+
+        public var canvas: String
+
+        public var card: String
+
+        public var elevated: String
+
+        public var grouped: String
+
+        public var onSurface: String
+
+        public var onSurfaceVariant: String
+
+        public var border: Border
+
+        public init(
+            canvas: String,
+            card: String,
+            elevated: String,
+            grouped: String,
+            onSurface: String,
+            onSurfaceVariant: String,
+            border: Border
+        ) {
+            self.canvas = canvas
+            self.card = card
+            self.elevated = elevated
+            self.grouped = grouped
+            self.onSurface = onSurface
+            self.onSurfaceVariant = onSurfaceVariant
+            self.border = border
+        }
+    }
+
     /// Dark-mode surface tokens.
     public struct DarkScheme: PklRegisteredType, Decodable, Hashable, Sendable {
         public static let registeredIdentifier: String = "catbird.Color#DarkScheme"
@@ -149,13 +244,16 @@ extension catbird_Color {
 
         public var onSurfaceVariant: String
 
+        public var border: Border
+
         public init(
             background: String,
             surface: String,
             surfaceContainer: String,
             surfaceContainerHigh: String,
             onSurface: String,
-            onSurfaceVariant: String
+            onSurfaceVariant: String,
+            border: Border
         ) {
             self.background = background
             self.surface = surface
@@ -163,6 +261,7 @@ extension catbird_Color {
             self.surfaceContainerHigh = surfaceContainerHigh
             self.onSurface = onSurface
             self.onSurfaceVariant = onSurfaceVariant
+            self.border = border
         }
     }
 
